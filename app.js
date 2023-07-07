@@ -1,30 +1,41 @@
 const express = require ('express')
 const app = express()
-const destinationRoute = require ('./routes/destinationRoutes')
-const reviewRoute = require ('./routes/reviewsRoute')
-
+const linkRouter = require("./routes/linkRoutes")
+const Link = require("./models/links")
 const dotenv = require('dotenv')
-
+const connectToDatabase = require('./config/config')
 
 
 
 dotenv.config();
 
-const port = process.env.PORT
-const db = require('./config/config')
-db()
-
-app.use('/photos' ,express.static('uploads/DestinationPhotos'))
-app.use('/avatar' ,express.static('uploads/avatars'))
+const port = process.env.HTTP_PORT
 
 app.use(express.json());
 
+app.get("/:shortUrl", async (req, res)=> {
+    try { 
+        const {shortUrl} = req.params;
+        const link = await Link.findOne({shortUrl})
+        const {longUrl} = link
+        if (!link) return res.status(404).json({
+           success: false,
+           message: "URL not found"
+           })
+         const redirectUrl = `${req.protocol}://${longUrl}`;
+
+         return res.redirect(301, redirectUrl);
+        
+        
+       } catch (err) {
+           res.status(500).json({ success: false , data: err})
+       }
+})
+
+app.use('/api/v1/links' , linkRouter )
 
 
-app.use('/api/v1/destinations' , destinationRoute )
-app.use('/api/v1/destinations/reviews' , reviewRoute )
-
-
-app.listen(port, () => {
+app.listen(port, async () => {
+    await connectToDatabase()
     console.log(`Server is Listening on port ${port}`)
 })
