@@ -1,7 +1,6 @@
 const Link = require ('../models/links');
 const linkSchemaValidator = require("../validations/validation")
 const {removeProtocol} = require("../helpers/helpers")
-// require = require('esm')(module);
 const { nanoid } = require('nanoid');
 
 const generateShortURL = async (req , res) => {
@@ -15,8 +14,7 @@ const generateShortURL = async (req , res) => {
 
     try {
         const {long, custom} = req.body
-        let baseUrl = "localhost:4000"
-        // let baseUrl = "slicr.ly"
+        let baseUrl = "slicr.onrender.com"
         let generatedUrl;
         let backHalf;
 
