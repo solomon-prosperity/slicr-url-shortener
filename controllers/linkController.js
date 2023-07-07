@@ -1,7 +1,7 @@
 const Link = require ('../models/links');
 const linkSchemaValidator = require("../validations/validation")
 const {removeProtocol} = require("../helpers/helpers")
-require = require('esm')(module);
+// require = require('esm')(module);
 const { nanoid } = require('nanoid');
 
 const generateShortURL = async (req , res) => {
